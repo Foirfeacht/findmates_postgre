@@ -1,0 +1,40 @@
+{
+  "name": "findmate",
+  "version": "0.2.9",
+  "author": "Vitaly Maltsev",
+  "license": "MIT",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Foirfeacht/findmate_nodejs"
+  },
+  "engines": {
+    "node": "0.12.x"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "latest",
+    "body-parser": "~1.0.0",
+    "connect-flash": "~0.1.1",
+    "cookie-parser": "~1.0.0",
+    "cors": "^2.5.3",
+    "ejs": "~0.8.5",
+    "express": "~4.0.0",
+    "express-session": "~1.0.0",
+    "lodash": "^3.6.0",
+    "method-override": "~1.0.0",
+    "mongoose": "^3.8.26",
+    "morgan": "~1.0.0",
+    "node-static": "~0.7.6",
+    "passport": "~0.1.17",
+    "passport-facebook": "~1.0.2",
+    "passport-local": "~0.1.6",
+    "passport-vkontakte": "^0.3.0",
+    "pg": "^4.3.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^2.0.6"
+  },
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node server.js"
+  }
+}
