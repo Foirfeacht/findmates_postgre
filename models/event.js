@@ -28,22 +28,24 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         Event.hasMany(models.Comment, {
-            as: 'comments'
+            as: 'comments',
+            constraints: false
         });
         Event.belongsTo(models.User, {
-            as: 'owner'
+            as: 'owner',
+            constraints: false
         });
         Event.hasMany(models.User, {
-            as: 'joinedUsers'
+            as: 'joinedUsers',
+            constraints: false
         });
         Event.hasMany(models.User, {
-            as: 'invitedUsers'
+            as: 'invitedUsers',
+            constraints: false
         });
       }
     }
   });
-
- // Event.sync();
 
   return Event;
 };

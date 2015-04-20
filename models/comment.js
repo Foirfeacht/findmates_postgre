@@ -13,14 +13,17 @@ module.exports = function(sequelize, DataTypes) {
   },{
     classMethods: {
       associate: function(models) {
-        Comment.hasOne(models.User, {
-        	as: 'author'
+        Comment.belongsTo(models.User, {
+        	as: 'author',
+        	constraints: false
+        });
+        Comment.belongsTo(models.Event, {
+        	as: 'event',
+        	constraints: false
         });
       }
     }
   });
-
-  //Comment.sync();
 
   return Comment;
 };

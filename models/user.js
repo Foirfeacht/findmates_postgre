@@ -30,13 +30,21 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         User.hasMany(models.Event, {
-            as: 'events'
+            as: 'events',
+             constraints: false
+        });
+        User.hasMany(models.Comment, {
+            as: 'comments'
+        });
+        User.hasMany(models.User, {
+            as: 'followers'
+        });
+        User.hasMany(models.User, {
+            as: 'following'
         });
       }
     }
   });
-
-  //User.sync();
 
   return User;
 };
