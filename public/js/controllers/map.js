@@ -88,7 +88,7 @@ findMate.controller('mapController', ['$scope', '$http', 'mapService', '$mdSiden
 
 
     // when landing on the page, get all events and show them
-    $http.get('../api/meetings')
+    $http.get('../api/events')
         .success(function(data) {
             $scope.meetings = data;
             console.log(data);
@@ -152,7 +152,7 @@ findMate.controller('mapController', ['$scope', '$http', 'mapService', '$mdSiden
     // get function to refresh on modal closing
 
     $scope.refresh = function() {
-        $http.get('../api/meetings')
+        $http.get('../api/events')
             .success(function(data) {
                 $scope.meetings = data;
                 console.log(data);

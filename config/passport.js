@@ -55,7 +55,6 @@ module.exports = function(passport) {
 
                 models.User.find({
                     where: {facebookId : profile.id }
-                    //include: [{model: models.Event, as: 'events'}]
                 }).success(function(user) {
 
                     if (user) {
@@ -65,7 +64,7 @@ module.exports = function(passport) {
                             user.facebookToken = token;
                             user.facebookName  = profile.name.givenName + ' ' + profile.name.familyName;
                             user.facebookEmail = (profile.emails[0].value || '').toLowerCase();
-                            user.facebookImage = 'https://graph.facebook.com/' + user.facebookId + '/picture?height=350&width=250'; 
+                            user.facebookImage = 'https://graph.facebook.com/' + profile.id + '/picture?height=350&width=250'; 
 
                             models.User.update(function(err) {
                                 if (err)
@@ -83,10 +82,10 @@ module.exports = function(passport) {
                             facebookToken : token,
                             facebookName  : profile.name.givenName + ' ' + profile.name.familyName,
                             facebookEmail : (profile.emails[0].value || '').toLowerCase(),
-                            facebookImage : 'https://graph.facebook.com/' + facebookId + '/picture?height=350&width=250',
+                            facebookImage : 'https://graph.facebook.com/' + profile.id + '/picture?height=350&width=250',
                             email         : (profile.emails[0].value || '').toLowerCase(),
                             name          : profile.name.givenName + ' ' + profile.name.familyName,
-                            image         : 'https://graph.facebook.com/' + facebookId + '/picture?height=350&width=250'
+                            image         : 'https://graph.facebook.com/' + profile.id + '/picture?height=350&width=250'
 
                         }).success(function(user){
                             console.log(user);
@@ -107,7 +106,7 @@ module.exports = function(passport) {
                 user.facebookToken = token;
                 user.facebookName  = profile.name.givenName + ' ' + profile.name.familyName;
                 user.facebookEmail = (profile.emails[0].value || '').toLowerCase();
-                user.facebookImage = 'https://graph.facebook.com/' + user.facebookId + '/picture?height=350&width=250';
+                user.facebookImage = 'https://graph.facebook.com/' + profile.id + '/picture?height=350&width=250';
                 
                 models.User.update(function(err) {
                     if (err)
@@ -140,19 +139,19 @@ module.exports = function(passport) {
             // check if the user is already logged in
             if (!req.user) {
 
-                User.findOne({ 'vkontakte.id' : profile.id }, function(err, user) {
-                    if (err)
-                        return done(err);
+                models.User.find({
+                    where: {facebookId : profile.id }
+                }).success(function(user) {
 
                     if (user) {
 
                         // if there is a user id already but no token (user was linked at one point and then removed)
                         if (!user.token) {
-                            user.vkontakte.token = token;
-                            user.vkontakte.name  = profile.displayName;
-                            user.vkontakte.email = params.email.toLowerCase();
-							user.vkontakte.image = profile.photos[0].value;
-                            user.save(function(err) {
+                            user.vkontakteToken = token;
+                            user.vkontakteName  = profile.displayName;
+                            user.vkontakteEmail = params.email.toLowerCase();
+							user.vkontakteImage = profile.photos[0].value;
+                            models.User.update(function(err) {
                                 if (err)
                                     return done(err);
                                     
@@ -163,23 +162,23 @@ module.exports = function(passport) {
                         return done(null, user); // user found, return that user
                     } else {
                         // if there is no user, create them
-                        var newUser            = new User();
+                        models.User.create({
+                            vkontakteId    : profile.id,
+                            vkontakteToken : token,
+                            vkontakteName  : profile.displayName,
+                            vkontakteEmail : params.email.toLowerCase(),
+                            vkontakteImage : profile.photos[0].value,
+                            email          : params.email.toLowerCase(),
+                            name           : profile.displayName,
+                            image          : profile.photos[0].value
 
-                        newUser.vkontakte.id    = profile.id;
-                        newUser.vkontakte.token = token;
-                        newUser.vkontakte.name  = profile.displayName;
-                        newUser.vkontakte.email = params.email.toLowerCase();
-						newUser.vkontakte.image = profile.photos[0].value;
-                        newUser.email           = params.email.toLowerCase();
-                        newUser.name            = profile.displayName;
-                        newUser.image           = profile.photos[0].value;
-    
-                        newUser.save(function(err) {
-                            if (err)
-                                return done(err);
-                                
-                            return done(null, newUser);
+                        }).success(function(user){
+                            console.log(user);
+                            return done(null, user)
+                        }).error(function(err) {
+                            return done(err);
                         });
+                    
                     }
                 });
 
@@ -187,15 +186,14 @@ module.exports = function(passport) {
                 // user already exists and is logged in, we have to link accounts
                 var user            = req.user; // pull the user out of the session
 
-                user.vkontakte.id    = profile.id;
-                user.vkontakte.token = token;
-                user.vkontakte.name  = profile.displayName;
-                user.vkontakte.email = params.email.toLowerCase();
-				//user.vkontakte.image = params.photo_200;
-				user.vkontakte.image = profile.photos[0].value;
+                user.vkontakteId    = profile.id;
+                user.vkontakteToken = token;
+                user.vkontakteName  = profile.displayName;
+                user.vkontakteEmail = params.email.toLowerCase();
+				user.vkontakteImage = profile.photos[0].value;
 
 
-                user.save(function(err) {
+                models.User.update(function(err) {
                     if (err)
                         return done(err);
                         

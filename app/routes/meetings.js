@@ -11,50 +11,61 @@ module.exports = function(app) {
 
 
 // get all meetings
-	app.get('/api/meetings', isLoggedIn, function(req, res) {
+	app.get('/api/events', isLoggedIn, function(req, res) {
 		var user = req.user;
 		// use mongoose to get all meetings in the database
-		Meeting.find(function(err, meetings) {
+		models.Event.findAll({
+				include: [{
+									model: models.User,
+									as: 'owner'
+								}]
+			}).then(function(err, events) {
 
 			// if there is an error retrieving, send the error. nothing after res.send(err) will execute
 			if (err)
 				res.send(err)
 
-			res.json(meetings); // return all meetings in JSON format
-		}).populate('_owner', 'ownerName');
+			//res.send(events);
+			console.log(events);
+			res.send({events: events}); // return all meetings in JSON format
+		});
 	});
 
 	// create meeting and send back all meetings after creation
-	app.post('/api/meetings', isLoggedIn, function(req, res) {
+	app.post('/api/events', isLoggedIn, function(req, res) {
 		var user = req.user;
 
 		// create a meeting, information comes from AJAX request from Angular
-		Meeting.create({
+		models.Event.create({
 			title : req.body.title,
 			description: req.body.description,
 			category: req.body.category,
 			startDate: req.body.startDate,
 			startTime: req.body.startTime,
-			created_at: new Date(),
 			latitude: req.body.latitude,
 			longitude: req.body.longitude,
 			position: req.body.position,
 			location: req.body.location,
 			visibility : req.body.visibility || 'Все',
-			_owner: req.user._id,
-			ownerName: req.user.name,
-			ownerFacebook: req.user.facebook.id,
-			ownerVkontakte: req.user.vkontakte.id,
+			//owner: req.user,
 			invitedUsers: req.body.invitedUsers
-		}, function(err, meeting) {
+		}).then(function(err, event) {
 			if (err)
 				res.send(err);
 
+			console.log(event);
 			// get and return all the meetins after you create another
-			Meeting.find(function(err, meetings) {
+			models.Event.findAll({
+				include: [{
+									model: models.User,
+									as: 'owner'
+								}]
+			}).then(function(err, events) {
 				if (err)
 					res.send(err)
-				res.json(meetings);
+				//res.json(events);
+				console.log(events);
+				res.send({events: events});
 			});
 		});
 

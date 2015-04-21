@@ -13,14 +13,14 @@ module.exports = function(app) {
 	app.get('/api/users', isLoggedIn, function(req, res) {
 		var user = req.user;
 		// use mongoose to get all meetings in the database
-		User.find(function(err, users) {
+		models.User.findAll().then(function(err, users) {
 
 			// if there is an error retrieving, send the error. nothing after res.send(err) will execute
 			if (err)
 				res.send(err)
 
 			res.json(users); // return all meetings in JSON format
-		}).populate('meetings._id', 'meetings.title');
+		});
 	});
 
 	var userByID = function(req, res, next, id) {

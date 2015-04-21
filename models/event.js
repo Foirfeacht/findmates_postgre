@@ -20,7 +20,7 @@ module.exports = function(sequelize, DataTypes) {
         position: DataTypes.DATE,
         visibility: {
             type: DataTypes.ENUM,
-            values: ['Все', 'Друзья'],
+            values: ['Общие', 'Друзья'],
             defaultValue: 'Друзья'
         }
 
@@ -28,20 +28,14 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         Event.hasMany(models.Comment, {
-            as: 'comments',
-            constraints: false
+            as: 'comments'
         });
         Event.belongsTo(models.User, {
-            as: 'owner',
-            constraints: false
+            as: 'owner'
         });
         Event.hasMany(models.User, {
-            as: 'joinedUsers',
-            constraints: false
-        });
-        Event.hasMany(models.User, {
-            as: 'invitedUsers',
-            constraints: false
+            as: 'eventId',
+            through: 'Participants'
         });
       }
     }

@@ -157,7 +157,7 @@ findMate.controller('DialogController', ['$scope', '$http', 'mapService', 'momen
 
 // working with api
 
-  $http.get('../api/meetings')
+  $http.get('../api/events')
         .success(function(data) {
             $scope.meetings = data;
             console.log(data);
@@ -170,10 +170,9 @@ findMate.controller('DialogController', ['$scope', '$http', 'mapService', 'momen
 
 
   $scope.createMeeting = function() {
-      $http.post('../api/meetings', $scope.formData)
+      $http.post('../api/events', $scope.formData)
               .success(function (data) {
                   console.log($scope.formData);
-                  $scope.formData = {}; // clear the form so our user is ready to enter another
                   $scope.meetings = data;
                   console.log(data);
                   $scope.ok();
